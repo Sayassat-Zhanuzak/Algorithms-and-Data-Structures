@@ -1,5 +1,4 @@
 #include <iostream>
-// #include <stack>
 #include <vector>
 
 using namespace std;
@@ -19,8 +18,6 @@ int main() {
 
     vector<bool> is_prime(limit + 1, true);
     vector<int> primes;
-
-    // stack<int> superprimes;
     vector<int> superprimes;
 
     is_prime[0] = is_prime[1] = false;
