@@ -57,7 +57,7 @@ Node* replace(Node* head, int p1, int p2){
         return head;
     }
 
-    Node* prev1 = nullptr;
+    Node* prev1 = NULL;
     Node* cur1 = head;
     for (int i = 0; cur1 && i < p1; i++) {
         prev1 = cur1;
@@ -95,7 +95,7 @@ Node* replace(Node* head, int p1, int p2){
 }
  
 Node* reverse(Node* head){
-    Node* prev = nullptr;
+    Node* prev = NULL;
     Node* cur = head;
     while (cur != NULL) {
         Node* nxt = cur->next;
@@ -140,7 +140,7 @@ Node* cyclic_left(Node* head, int x){
     }
 
     Node* newHead = cur->next;
-    cur->next = nullptr;
+    cur->next = NULL;
 
     Node* tail = newHead;
     while (tail->next != NULL) {
@@ -163,7 +163,7 @@ Node* cyclic_right(Node* head, int x){
 }
  
 int main(){
-    Node* head = nullptr;
+    Node* head = NULL;
     while (true)
     {
         int command; cin >> command;
