@@ -12,60 +12,84 @@ struct Node{
 };
  
 Node* insert(Node* head, Node* node, int p){
-    if(p == 0) {
+    if (p == 0) {
         node->next = head;
         return node;
     }
-    Node *curr = head;
-    for(int i = 0; i < p - 1; i++) {
-        curr = curr->next;
+    Node* cur = head;
+    for (int i = 0; cur && i < p - 1; i++) {
+        cur = cur->next;
     }
-    curr->next = curr->next;
-    curr->next = node;
+    if (!cur) {
+        return head;
+    }
+    node->next = cur->next;
+    cur->next = node;
     return head;
+
 }
  
 Node* remove(Node* head, int p){
-    if(head == nullptr) return nullptr;
-    if(p == 0){
+    if (head == NULL) {
+        return NULL;
+    }
+    if (p == 0) {
         Node* tmp = head->next;
         delete head;
         return tmp;
     }
     Node* cur = head;
-    for(int i = 0; i < p-1; i++){
+    for (int i = 0; cur->next && i < p - 1; i++) {
         cur = cur->next;
     }
-    Node* toDelete = cur->next;
-    cur->next = toDelete->next;
-    delete toDelete;
+    if (!cur->next) {
+        return head;
+    }
+    Node* del = cur->next;
+    cur->next = del->next;
+    delete del;
     return head;
 
 }
  
 Node* replace(Node* head, int p1, int p2){
-    if(p1 == p2) return head;
-
-    Node* cur = head;
-    Node* toMove;
-    if(p1 == 0){
-        toMove = head;
-        head = head->next;
-    } else {
-        for(int i = 0; i < p1-1; i++) cur = cur->next;
-        toMove = cur->next;
-        cur->next = toMove->next;
+    if (!head || p1 == p2) {
+        return head;
     }
 
-    if(p2 == 0){
-        toMove->next = head;
-        head = toMove;
-    } else {
-        cur = head;
-        for(int i = 0; i < p2-1; i++) cur = cur->next;
-        toMove->next = cur->next;
-        cur->next = toMove;
+    Node* prev1 = nullptr;
+    Node* cur1 = head;
+    for (int i = 0; cur1 && i < p1; i++) {
+        prev1 = cur1;
+        cur1 = cur1->next;
     }
+    if (cur1 == NULL) {
+        return head;
+    }
+
+    if (prev1 != NULL) {
+        prev1->next = cur1->next;
+    }
+    else {
+        head = cur1->next;
+    }
+
+    if (p2 == 0) {
+        cur1->next = head;
+        return cur1;
+    }
+
+    Node* cur2 = head;
+    for (int i = 0; cur2 && i < p2 - 1; i++) {
+        cur2 = cur2->next;
+    }
+    if (cur2 == NULL) {
+        return head;
+    }
+
+    cur1->next = cur2->next;
+    cur2->next = cur1;
+
     return head;
 
 }
@@ -73,63 +97,69 @@ Node* replace(Node* head, int p1, int p2){
 Node* reverse(Node* head){
     Node* prev = nullptr;
     Node* cur = head;
-    while(cur != nullptr){
+    while (cur != NULL) {
         Node* nxt = cur->next;
         cur->next = prev;
         prev = cur;
         cur = nxt;
     }
     return prev;
-
 }
  
 void print(Node* head){
-    if(head == nullptr){
-        cout << -1 << endl;
-        return;
-    }
     Node* cur = head;
-    while(cur != nullptr){
-        cout << cur->val;
-        if(cur->next != nullptr) cout << " ";
+    while (cur != NULL) {
+        cout << cur->val << " ";
         cur = cur->next;
     }
     cout << endl;
+}
 
+int length(Node* head) {
+    int len = 0;
+    while (head != NULL) {
+        len++;
+        head = head->next;
+    }
+    return len;
 }
  
 Node* cyclic_left(Node* head, int x){
-    if(head == nullptr) return nullptr;
+    if (head == NULL || head->next == NULL) {
+        return head;
+    }
+    int n = length(head);
+    x %= n;
+    if (x == 0) {
+        return head;
+    }
 
-    int len = 0;
     Node* cur = head;
-    while(cur){ len++; cur = cur->next; }
-    x %= len;
-    if(x == 0) return head;
+    for (int i = 0; i < x - 1; i++) {
+        cur = cur->next;
+    }
 
-    cur = head;
-    for(int i = 0; i < x-1; i++) cur = cur->next;
     Node* newHead = cur->next;
     cur->next = nullptr;
 
     Node* tail = newHead;
-    while(tail->next) tail = tail->next;
+    while (tail->next != NULL) {
+        tail = tail->next; 
+    }
     tail->next = head;
-
     return newHead;
-
 }
  
 Node* cyclic_right(Node* head, int x){
-    if(head == nullptr) return nullptr;
-
-    int len = 0;
-    Node* cur = head;
-    while(cur){ len++; cur = cur->next; }
-    x %= len;
-    if(x == 0) return head;
-
-    return cyclic_left(head, len - x);
+    if (head == NULL || head->next == NULL) {
+        return head;
+    }
+    int n = length(head);
+    x %= n;
+    if (x == 0) {
+        return head;
+    }
+    return cyclic_left(head, n - x);
 }
  
 int main(){
