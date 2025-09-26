@@ -1,93 +1,84 @@
 #include <iostream>
-#include <map>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 class Node {
-    public:
+public:
     int data;
-    Node *next, *prev;
-
+    int count;
+    Node* next;
+    Node* prev;
     Node(int data) {
         this->data = data;
-        this->next = NULL;
-        this->prev = NULL;
+        count = 1;
+        next = NULL;
+        prev = NULL;
     }
 };
 
 class Linked_list {
     public:
-    int size;
-    Node *tail, *head;
+    Node* head;
+    Node* tail;
 
     Linked_list() {
-        tail = NULL;
         head = NULL;
-        size = 0;
+        tail = NULL;
     }
 
-    void push_front(int data) {
-        Node *node = new Node(data);
-        if(tail != NULL) {
-            tail->next = node;
-            node->prev = tail;
+    void insert_or_update(int x) {
+        Node* cur = head;
+        Node* prev = NULL;
+        while(cur != NULL) {
+            if (cur->data == x) {
+                cur->count++;
+                return;
+            }
+            prev = cur;
+            cur = cur->next;
+        }
+        Node* node = new Node(x);
+        if(head == NULL) {
+            head = node;
             tail = node;
         } else {
+            prev->next = node;
+            node->prev = prev;
             tail = node;
-            head = node;
         }
-        size++;
-    }
-
-
-    void pop_front() {
-        if(tail != NULL) {
-            tail = tail->prev;
-            if(tail != NULL) {
-                tail->next = NULL;
-            } else {
-                tail = NULL;
-            }
-        }
-        size--;
-    }
-
-    bool empty() {
-        return (size == 0);
-    }
-
-    int front() {
-        return tail->data;
     }
 };
 
 int main() {
-    int num;
-    cin >> num;
-    map<int, int> mp;
+    int n;
+    cin >> n;
+
     Linked_list *ll = new Linked_list();
-
-    for(int i = 0; i < num; i++) {
-        int value;
-        cin >> value;
-        mp[value]++;
+    for(int i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+        ll->insert_or_update(x);
     }
 
-    map<int, int>::iterator it = mp.begin();
-    int max = it->second; 
-    for(it = mp.begin(); it != mp.end(); it++) {
-        if(max < it->second) {
-            max = it->second;
+    int max_freq = 0;
+    for(Node* cur = ll->head; cur != NULL; cur = cur->next) {
+        if (cur->count > max_freq) {
+            max_freq = cur->count;
         }
     }
 
-    for(map<int, int>::iterator jt = mp.begin(); jt != mp.end(); jt++) {
-        if(jt->second == max) {
-            ll->push_front(jt->first);
+    vector<int> modes;
+    for (Node* cur = ll->head; cur != NULL; cur = cur->next) {
+        if (cur->count == max_freq) {
+            modes.push_back(cur->data);
         }
     }
 
-    while(!ll->empty()) {
-        cout << ll->front() << " ";
-        ll->pop_front(); 
+    sort(modes.begin(), modes.end(), greater<int>());
+
+    for (int i = 0; i < modes.size(); i++) {
+        cout << modes[i] << " ";
     }
+    return 0;
 }
