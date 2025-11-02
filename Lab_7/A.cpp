@@ -42,7 +42,7 @@ int main() {
 
     int T;
     cin >> T;
-    cin.ignore(); // skip newline after number
+    cin.ignore();
 
     for (int t = 0; t < T; t++) {
         string line;
